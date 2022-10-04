@@ -21,9 +21,9 @@ class Calculator:
 
     def get_today_stats(self):
         today_stats = 0
-        for Record in self.records:
-            if Record.date == dt.datetime.now().date():
-                today_stats = today_stats + Record.amount
+        for record in self.records:  # Use lower case for variable names
+            if record.date == dt.datetime.now().date():
+                today_stats = today_stats + record.amount
         return today_stats
 
     def get_week_stats(self):
@@ -31,8 +31,7 @@ class Calculator:
         today = dt.datetime.now().date()
         for record in self.records:
             if (
-                (today - record.date).days < 7 and
-                (today - record.date).days >= 0
+                    7 > (today - record.date).days >= 0  # Simplified the chain
             ):
                 week_stats += record.amount
         return week_stats
@@ -45,7 +44,7 @@ class CaloriesCalculator(Calculator):
             return f'Сегодня можно съесть что-нибудь' \
                    f' ещё, но с общей калорийностью не более {x} кКал'
         else:
-            return('Хватит есть!')
+            return 'Хватит есть!'    # No need for using brackets, be consistent in your code
 
 
 class CashCalculator(Calculator):
@@ -53,17 +52,18 @@ class CashCalculator(Calculator):
     EURO_RATE = float(70)  # Курс Евро.
 
     def get_today_cash_remained(self, currency,
-                                USD_RATE=USD_RATE, EURO_RATE=EURO_RATE):
+                                usd_rate=USD_RATE, eur_rate=EURO_RATE):  # Use upper case letters only for CONSTANTS.
+        # Follow PEP8 rules
         currency_type = currency
         cash_remained = self.limit - self.get_today_stats()
         if currency == 'usd':
-            cash_remained /= USD_RATE
+            cash_remained /= usd_rate
             currency_type = 'USD'
         elif currency_type == 'eur':
-            cash_remained /= EURO_RATE
+            cash_remained /= eur_rate
             currency_type = 'Euro'
         elif currency_type == 'rub':
-            cash_remained == 1.00
+            # cash_remained == 1.00. This particular code has no effect
             currency_type = 'руб'
         if cash_remained > 0:
             return (

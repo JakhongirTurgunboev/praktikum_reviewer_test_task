@@ -21,7 +21,7 @@ class Calculator:
 
     def get_today_stats(self):
         today_stats = 0
-        for record in self.records:  # Use lower case for variable names
+        for record in self.records:  # Используйте нижний регистр для имен переменных
             if record.date == dt.datetime.now().date():
                 today_stats = today_stats + record.amount
         return today_stats
@@ -31,20 +31,21 @@ class Calculator:
         today = dt.datetime.now().date()
         for record in self.records:
             if (
-                    7 > (today - record.date).days >= 0  # Simplified the chain
+                    7 > (today - record.date).days >= 0  # Упростил цепочку
             ):
                 week_stats += record.amount
         return week_stats
 
 
 class CaloriesCalculator(Calculator):
-    def get_calories_remained(self):  # Получает остаток калорий на сегодня
+    def get_calories_remained(self):
+        """Получает остаток калорий на сегодня"""
         x = self.limit - self.get_today_stats()
         if x > 0:
             return f'Сегодня можно съесть что-нибудь' \
                    f' ещё, но с общей калорийностью не более {x} кКал'
         else:
-            return 'Хватит есть!'    # No need for using brackets, be consistent in your code
+            return 'Хватит есть!'    # Не нужно использовать скобки, будьте последовательны в своем коде
 
 
 class CashCalculator(Calculator):
@@ -52,8 +53,8 @@ class CashCalculator(Calculator):
     EURO_RATE = float(70)  # Курс Евро.
 
     def get_today_cash_remained(self, currency,
-                                usd_rate=USD_RATE, eur_rate=EURO_RATE):  # Use upper case letters only for CONSTANTS.
-        # Follow PEP8 rules
+                                usd_rate=USD_RATE, eur_rate=EURO_RATE):  # Используйте заглавные буквы
+        # только для КОНСТАНТОВ. Следуйте правилам PEP8
         currency_type = currency
         cash_remained = self.limit - self.get_today_stats()
         if currency == 'usd':
@@ -63,7 +64,7 @@ class CashCalculator(Calculator):
             cash_remained /= eur_rate
             currency_type = 'Euro'
         elif currency_type == 'rub':
-            # cash_remained == 1.00. This particular code has no effect
+            # cash_remained == 1.00. Этот код не имеет никакого эффекта
             currency_type = 'руб'
         if cash_remained > 0:
             return (
@@ -79,3 +80,20 @@ class CashCalculator(Calculator):
 
     def get_week_stats(self):
         super().get_week_stats()
+
+
+if __name__ == "__main__":
+    # создадим калькулятор денег с дневным лимитом 1000
+    cash_calculator = CashCalculator(1000)
+
+    # дата в параметрах не указана,
+    # так что по умолчанию к записи должна автоматически добавиться сегодняшняя дата
+    cash_calculator.add_record(Record(amount=145, comment="кофе"))
+    # и к этой записи тоже дата должна добавиться автоматически
+    cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
+    # а тут пользователь указал дату, сохраняем её
+    cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
+
+    print(cash_calculator.get_today_cash_remained("rub"))
+    # должно напечататься
+    # На сегодня осталось 555 руб
